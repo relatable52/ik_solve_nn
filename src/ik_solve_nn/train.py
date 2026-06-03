@@ -9,7 +9,7 @@ import numpy as np
 from tqdm.auto import tqdm
 
 from .models import UR3ForwardModel, UR3InverseModel
-from .kinematics import DifferentiableUR3FK, quat_to_rot_matrix
+from .kinematics import DifferentiableUR3FK, rotmat_to_quat, quat_to_rot_matrix
 
 def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
     """
@@ -215,7 +215,8 @@ def test_ur3_model(inverse_net, test_loader, mode_idx=2, num_classes=8):
             rot_true = quat_to_rot_matrix(poses_true[:, 3:])
 
             pos_error = torch.norm(pos_pred - pos_true, dim=1)
-            ori_error = torch.sqrt(F.mse_loss(rot_pred, rot_true) + 1e-8)
+            # Per-sample orientation RMSE over each 3x3 rotation matrix.
+            ori_error = torch.sqrt(torch.mean((rot_pred - rot_true) ** 2, dim=(1, 2)) + 1e-8)
 
             ee_true = np.concatenate([pos_true.cpu().numpy(), rot_true.cpu().numpy().reshape(-1, 9)], axis=1)
             ee_pred = np.concatenate([pos_pred.cpu().numpy(), rot_pred.cpu().numpy().reshape(-1, 9)], axis=1)
