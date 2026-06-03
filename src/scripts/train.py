@@ -130,9 +130,21 @@ def main():
         num_classes=args.num_classes,
     )
 
-    mean_pos_mm = pos_errors.mean().item() * 1000.0
-    median_pos_mm = pos_errors.median().item() * 1000.0
-    print(f"Position error - mean: {mean_pos_mm:.3f} mm  |  median: {median_pos_mm:.3f} mm")
+    pos_mm = pos_errors * 1000.0
+    print(
+        "Position error (mm) - "
+        f"mean: {pos_mm.mean().item():.3f}  |  "
+        f"median: {pos_mm.median().item():.3f}  |  "
+        f"min: {pos_mm.min().item():.3f}  |  "
+        f"max: {pos_mm.max().item():.3f}"
+    )
+    print(
+        "Orientation error (RMSE) - "
+        f"mean: {ori_errors.mean().item():.6f}  |  "
+        f"median: {ori_errors.median().item():.6f}  |  "
+        f"min: {ori_errors.min().item():.6f}  |  "
+        f"max: {ori_errors.max().item():.6f}"
+    )
 
     # ------------------------------------------------------------------
     # 5. Save test results
