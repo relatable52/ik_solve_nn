@@ -14,7 +14,7 @@ def parse_args() -> argparse.Namespace:
 		description="Generate UR3 FK dataset using DifferentiableUR3FK (no robotics-toolbox)."
 	)
 	parser.add_argument("--save-dir", type=Path, default=Path("datasets"))
-	parser.add_argument("--samples", type=int, default=1_000_000)
+	parser.add_argument("--samples", type=int, default=2_000_000)
 	parser.add_argument("--train-ratio", type=float, default=0.8, help="Proportion of samples to use for training set.")
 	parser.add_argument("--chunk-size", type=int, default=100_000)
 	parser.add_argument("--seed", type=int, default=42)
@@ -39,4 +39,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
