@@ -41,7 +41,7 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
         'train_total': [], 'train_fw': [], 'train_iv': [], 'train_kl': [], 'train_spatial_rmse': [], 'train_ori_rmse': [],
         'test_total': [],  'test_fw': [],  'test_iv': [],  'test_kl': [],  'test_spatial_rmse': [],  'test_ori_rmse': []
     }
-    warmup_epochs = epochs * 0.7  # e.g., first 24 epochs if total is 30
+    warmup_epochs = epochs * 0.6
 
     for epoch in (loop := tqdm(range(epochs))):
         # ---------------------------------------------------------
@@ -90,7 +90,7 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
                 weight_ori = 0.0
             else:
                 weight_pos = 5.0
-                weight_ori = 2.0  # Gives the wrist joints a gentle but firm pull
+                weight_ori = 0.2  # Gives the wrist joints a gentle but firm pull
 
             total_loss = (
                 3.0 * loss_fw +
@@ -215,8 +215,11 @@ def test_ur3_model(inverse_net, test_loader, mode_idx=2, num_classes=8):
             rot_true = quat_to_rot_matrix(poses_true[:, 3:])
 
             pos_error = torch.norm(pos_pred - pos_true, dim=1)
-            # Per-sample orientation RMSE over each 3x3 rotation matrix.
-            ori_error = torch.sqrt(torch.mean((rot_pred - rot_true) ** 2, dim=(1, 2)) + 1e-8)
+            # Per-sample geodesic orientation error in degrees.
+            rel_rot = torch.matmul(rot_pred, rot_true.transpose(1, 2))
+            trace = rel_rot[:, 0, 0] + rel_rot[:, 1, 1] + rel_rot[:, 2, 2]
+            cos_theta = torch.clamp((trace - 1.0) * 0.5, min=-1.0, max=1.0)
+            ori_error = torch.acos(cos_theta) * (180.0 / np.pi)
 
             ee_true = np.concatenate([pos_true.cpu().numpy(), rot_true.cpu().numpy().reshape(-1, 9)], axis=1)
             ee_pred = np.concatenate([pos_pred.cpu().numpy(), rot_pred.cpu().numpy().reshape(-1, 9)], axis=1)

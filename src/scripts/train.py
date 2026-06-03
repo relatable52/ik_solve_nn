@@ -33,7 +33,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--test-csv", type=Path, default=Path("datasets/ur3_fk_test.csv"),
                         help="Path to the test CSV dataset.")
     parser.add_argument("--batch-size", type=int, default=2048)
-    parser.add_argument("--epochs", type=int, default=30)
+    parser.add_argument("--epochs", type=int, default=40)
     parser.add_argument("--num-classes", type=int, default=8,
                         help="Number of discrete IK solution modes (latent classes).")
     parser.add_argument("--mode-idx", type=int, default=2,
@@ -139,7 +139,7 @@ def main():
         f"max: {pos_mm.max().item():.3f}"
     )
     print(
-        "Orientation error (RMSE) - "
+        "Orientation error (deg) - "
         f"mean: {ori_errors.mean().item():.6f}  |  "
         f"median: {ori_errors.median().item():.6f}  |  "
         f"min: {ori_errors.min().item():.6f}  |  "
