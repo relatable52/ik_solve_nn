@@ -109,3 +109,25 @@ def rotmat_to_quat(rot: torch.Tensor) -> torch.Tensor:
 	flip_mask = quat[:, :1] < 0
 	quat = torch.where(flip_mask, -quat, quat)
 	return quat
+
+def quat_to_rot_matrix(quat):
+    """
+    Differentiable conversion from quaternion [qw, qx, qy, qz] to a 3x3 Rotation Matrix.
+    """
+    w, x, y, z = quat[:, 0], quat[:, 1], quat[:, 2], quat[:, 3]
+
+    R = torch.zeros((quat.size(0), 3, 3), device=quat.device)
+
+    R[:, 0, 0] = 1.0 - 2.0 * (y**2 + z**2)
+    R[:, 0, 1] = 2.0 * (x*y - z*w)
+    R[:, 0, 2] = 2.0 * (x*z + y*w)
+
+    R[:, 1, 0] = 2.0 * (x*y + z*w)
+    R[:, 1, 1] = 1.0 - 2.0 * (x**2 + z**2)
+    R[:, 1, 2] = 2.0 * (y*z - x*w)
+
+    R[:, 2, 0] = 2.0 * (x*z - y*w)
+    R[:, 2, 1] = 2.0 * (y*z + x*w)
+    R[:, 2, 2] = 1.0 - 2.0 * (x**2 + y**2)
+
+    return R
