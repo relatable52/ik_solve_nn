@@ -30,11 +30,11 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
 
     optimizer = optim.AdamW(
         list(forward_net.parameters()) + list(inverse_net.parameters()),
-        lr=1e-4, weight_decay=1e-5
+        lr=2e-3, weight_decay=1e-4
     )
 
     temperature = 1.0
-    anneal_rate = 0.90
+    anneal_rate = 0.95
 
     # Added ori_rmse to history tracking
     history = {
