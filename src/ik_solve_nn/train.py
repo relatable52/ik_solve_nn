@@ -34,7 +34,7 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
     )
 
     temperature = 1.0
-    anneal_rate = 0.95
+    anneal_rate = 0.90
 
     # Added ori_rmse to history tracking
     history = {
@@ -89,8 +89,8 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
                 weight_pos = 0.0
                 weight_ori = 0.0
             else:
-                weight_pos = 5.0
-                weight_ori = 0.2  # Gives the wrist joints a gentle but firm pull
+                weight_pos = 10.0
+                weight_ori = 0.1  # Gives the wrist joints a gentle but firm pull
 
             total_loss = (
                 3.0 * loss_fw +
