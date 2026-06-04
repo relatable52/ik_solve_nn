@@ -30,7 +30,7 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
 
     optimizer = optim.AdamW(
         list(forward_net.parameters()) + list(inverse_net.parameters()),
-        lr=1e-3, weight_decay=1e-4
+        lr=5e-4, weight_decay=1e-4
     )
 
     temperature = 1.0
@@ -89,11 +89,11 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
                 weight_pos = 0.0
                 weight_ori = 0.0
             else:
-                weight_pos = 10.0
+                weight_pos = 3.0
                 weight_ori = 0.1  # Gives the wrist joints a gentle but firm pull
 
             total_loss = (
-                3.0 * loss_fw +
+                5.0 * loss_fw +
                 10.0 * loss_iv +
                 0.02 * kl_div +
                 weight_pos * loss_spatial_rmse +
