@@ -92,3 +92,7 @@ class UR3IKDataset(Dataset):
 
     def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
         return self.joints[idx], self.poses[idx]
+	
+def build_dataloader(csv_path: str | Path, batch_size: int, num_workers: int = 0) -> torch.utils.data.DataLoader:
+	dataset = UR3IKDataset(csv_path)
+	return torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
