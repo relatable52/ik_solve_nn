@@ -41,7 +41,7 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
         'train_total': [], 'train_fw': [], 'train_iv': [], 'train_kl': [], 'train_spatial_rmse': [], 'train_ori_rmse': [],
         'test_total': [],  'test_fw': [],  'test_iv': [],  'test_kl': [],  'test_spatial_rmse': [],  'test_ori_rmse': []
     }
-    warmup_epochs = 25
+    warmup_epochs = 30
 
     for epoch in (loop := tqdm(range(epochs))):
         # ---------------------------------------------------------
