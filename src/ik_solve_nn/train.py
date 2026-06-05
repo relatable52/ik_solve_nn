@@ -34,14 +34,14 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
     )
 
     temperature = 1.0
-    anneal_rate = 0.91
+    anneal_rate = 0.9
 
     # Added ori_rmse to history tracking
     history = {
         'train_total': [], 'train_fw': [], 'train_iv': [], 'train_kl': [], 'train_spatial_rmse': [], 'train_ori_rmse': [],
         'test_total': [],  'test_fw': [],  'test_iv': [],  'test_kl': [],  'test_spatial_rmse': [],  'test_ori_rmse': []
     }
-    warmup_epochs = 20
+    warmup_epochs = 25
 
     for epoch in (loop := tqdm(range(epochs))):
         # ---------------------------------------------------------
@@ -90,10 +90,10 @@ def train_ur3_model(train_loader, test_loader, num_classes=8, epochs=15):
                 weight_ori = 0.0
             else:
                 weight_pos = 5.0
-                weight_ori = 0.2  # Gives the wrist joints a gentle but firm pull
+                weight_ori = 0.05  # Gives the wrist joints a gentle but firm pull
 
             total_loss = (
-                1.0 * loss_fw +
+                2.0 * loss_fw +
                 10.0 * loss_iv +
                 0.02 * kl_div +
                 weight_pos * loss_spatial_rmse +
